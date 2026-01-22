@@ -139,98 +139,85 @@ GROUP BY subscription_status;
 ```
 ---
 
-### 📈 Power BI Dashboard
+## 📈 Power BI Dashboard
 
 An interactive Power BI dashboard was created to visualize insights, including:
 
-Customer demographics
+- Customer demographics
+- Purchase behavior trends
+- Product performance metrics
+- Subscription analysis
+- Discount effectiveness
 
-Purchase behavior trends
+📂 File: `C:\Users\DELL\Personal_Projects\Personal_Projects_new\Customer_behaviour_analysis\analysis\Customer_behaviour_dashboard-1.jpg`
 
-Product performance metrics
+**Optional:** Add a screenshot of your dashboard below by placing the image in your repository and updating the path:
 
-Subscription analysis
+![Power BI Dashboard](power_bi/dashboard_screenshot.png)
 
-Discount effectiveness
+---
 
-### 📂 File: power_bi/customer_behavior_dashboard.pbix
+## 🔍 Key Findings
 
-### 🔍 Key Findings
+- Customers can be segmented into **New, Returning, and Loyal**  
+- Some customers spend above average even with discounts applied  
+- Express shipping users show higher purchase values  
+- Subscribers exhibit distinct purchasing patterns  
+- Revenue contribution varies across age groups
 
-Clear segmentation into New, Returning, and Loyal customers
+---
 
-Discounts increase volume, but some customers spend above average even with discounts
+## 💡 Business Recommendations
 
-Express shipping customers tend to have higher purchase values
+- Promote subscription benefits to increase customer retention  
+- Introduce loyalty rewards for repeat customers  
+- Optimize discount strategies to protect profit margins  
+- Highlight top-rated and high-performing products  
+- Target marketing efforts toward high-value age groups
 
-Subscribers exhibit distinct purchasing behavior
+---
 
-Revenue contribution varies significantly across age groups
+## 🛠️ Technologies Used
 
-### 💡 Business Recommendations
+- **Python (Pandas)** – Data cleaning & preparation  
+- **PostgreSQL** – Data storage  
+- **SQL** – Business analysis  
+- **Power BI** – Data visualization  
+- **GitHub** – Version control & documentation
 
-Promote subscription benefits to increase long-term value
+---
 
-Implement loyalty programs for repeat buyers
+## ▶️ How to Run This Project
 
-Optimize discount strategies to protect margins
-
-Highlight top-rated and best-selling products
-
-Focus targeted marketing on high-value age groups
-
-### 🛠️ Technologies Used
-
-Python (Pandas) – Data cleaning & preparation
-
-PostgreSQL – Data storage
-
-SQL – Business analysis
-
-Power BI – Dashboard & visualization
-
-GitHub – Version control & documentation
-
-### ▶️ How to Run the Project
+```bash
 git clone https://github.com/yourusername/customer-shopping-behavior-analysis.git
 cd customer-shopping-behavior-analysis
+```
 
+- Create a PostgreSQL database named customer_behaviour
 
-Create a PostgreSQL database named customer_behaviour
+- Install dependencies:
 
-Install dependencies:
-
+```bash
 pip install pandas psycopg2-binary sqlalchemy
-
-
-Run:
-
+```
+- Run the data preparation script:
+```bash
 python scripts/data_preparation.py
+```
+- Execute SQL queries from sql/business_queries.sql
 
+- Open the Power BI dashboard file
 
-Execute SQL queries from sql/business_queries.sql
+## 🚀 Future Work
 
-Open Power BI dashboard file
+- Predictive modeling for purchase behavior
+- Seasonal trend analysis
+- Real-time analytics integration
+- Personalized recommendation engine
+- Integration of additional data sources
 
-### 🚀 Future Work
+## 📬 Contact
 
-Predictive modeling for purchase behavior
-
-Real-time analytics integration
-
-Seasonal trend analysis
-
-Personalized recommendation engine
-
-
-
-This project is licensed under the MIT License.
-
-### 📬 Contact
-
-For questions or collaborations, reach out at:
-tarunkari0411@gmail.com
-
-                        
-
-
+For questions or collaborations, reach out at:  
+**your.email@example.com**
