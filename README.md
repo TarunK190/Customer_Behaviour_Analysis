@@ -149,11 +149,11 @@ An interactive Power BI dashboard was created to visualize insights, including:
 - Subscription analysis
 - Discount effectiveness
 
-📂 File: `C:\Users\DELL\Personal_Projects\Personal_Projects_new\Customer_behaviour_analysis\analysis\Customer_behaviour_dashboard-1.jpg`
+📂 File: `power_bi/customer_behavior_dashboard.pbix`
 
-**Optional:** Add a screenshot of your dashboard below by placing the image in your repository and updating the path:
 
-![Power BI Dashboard](power_bi/dashboard_screenshot.png)
+
+![Power BI Dashboard](C:\Users\DELL\Personal_Projects\Personal_Projects_new\Customer_behaviour_analysis\analysis\Customer_behaviour_dashboard-1.jpg)
 
 ---
 
