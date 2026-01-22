@@ -1,290 +1,212 @@
-Customer Shopping Behavior Analysis
-Project Overview
-This project analyzes customer shopping behavior using transactional data from 3,900 purchases across various product categories. The goal is to uncover insights into spending patterns, customer segments, product preferences, and subscription behavior to guide strategic business decisions for a leading retail company.
+# 🛒 Customer Shopping Behavior Analysis
 
-Business Problem
-A leading retail company wants to better understand its customers' shopping behavior to improve sales, customer satisfaction, and long-term loyalty. The management team has noticed changes in purchasing patterns across demographics, product categories, and sales channels (online vs. offline). They are particularly interested in uncovering which factors, such as discounts, reviews, seasons, or payment preferences, drive consumer decisions and repeat purchases.
+## 📌 Project Overview
+This project analyzes customer shopping behavior using transactional data from **3,900 purchases** across multiple product categories. The objective is to uncover insights into **spending patterns, customer segments, product preferences, and subscription behavior** to support data-driven business decisions for a retail organization.
 
-Dataset Summary
-Rows: 3,900
-Columns: 18
-Key Features:
-Customer demographics (Age, Gender, Location, Subscription Status)
-Purchase details (Item Purchased, Category, Purchase Amount, Season, Size, Color)
-Shopping behavior (Discount Applied, Promo Code Used, Previous Purchases, Frequency of Purchases, Review Rating, Shipping Type)
-Missing Data: 37 values in Review Rating column
-Project Structure
-customer-shopping-behavior-analysis/
-├── data/
-│ └── customer_shopping_behavior.csv
-├── notebooks/
-│ └── data_preparation_and_cleaning.ipynb
-├── sql/
-│ └── business_queries.sql
-├── power_bi/
-│ └── customer_behavior_dashboard.pbix
-├── scripts/
-│ └── data_preparation.py
-└── README.md
+---
+
+## 🧩 Business Problem
+A leading retail company aims to better understand how customers interact with its products and services. Management observed changes in purchasing patterns across:
+- Customer demographics  
+- Product categories  
+- Sales channels (online vs. offline)
+
+Key interests include understanding how **discounts, reviews, seasons, shipping types, and subscription status** influence customer decisions and repeat purchases.
+
+---
+
+## 📊 Dataset Summary
+- **Rows:** 3,900  
+- **Columns:** 18  
+
+### Key Features
+- **Customer Demographics:** Age, Gender, Location, Subscription Status  
+- **Purchase Details:** Item Purchased, Category, Purchase Amount, Season, Size, Color  
+- **Shopping Behavior:** Discount Applied, Promo Code Used, Previous Purchases, Frequency of Purchases, Review Rating, Shipping Type  
+
+⚠️ **Missing Data:**  
+- 37 missing values in the `Review Rating` column
+
+---
 
 
+---
 
-## Data Preparation & Cleaning
+## 🧹 Data Preparation & Cleaning
 
-### 1. Data Loading and Initial Exploration
-
+### 1️⃣ Data Loading and Initial Exploration
 ```python
 import pandas as pd
 
-# Load the dataset
-df = pd.read_csv(r"C:\Users\DELL\Downloads\customer_shopping_behavior.csv")
-
-# Display first 20 rows
+df = pd.read_csv("customer_shopping_behavior.csv")
 df.head(20)
-
-# Check data structure
 df.info()
-
-# Get summary statistics
 df.describe(include='all')
-
-# Check for missing values
 df.isnull().sum()
-2. Handling Missing Data
-The Review Rating column had 37 missing values, which we imputed using the median rating of each product category:
 
-python
 
-# Impute missing values in Review Rating with median of each category
-df['Review Rating'] = df.groupby('Category')['Review Rating'].transform(lambda x: x.fillna(x.median()))
+2️⃣ Handling Missing Data
 
-# Verify no more missing values
-df.isnull().sum()
-3. Column Standardization
-We standardized column names for better readability and consistency:
+The Review Rating column contained 37 missing values. These were imputed using the median rating per product category.
 
-python
+df['Review Rating'] = df.groupby('Category')['Review Rating'] \
+                        .transform(lambda x: x.fillna(x.median()))
 
-# Convert to lowercase and replace spaces with underscores
-df.columns = df.columns.str.lower()
-df.columns = df.columns.str.replace(' ', '_')
 
-# Rename specific column
+3️⃣ Column Standardization
+df.columns = df.columns.str.lower().str.replace(' ', '_')
 df = df.rename(columns={'purchase_amount_(usd)': 'purchase_amount'})
-4. Feature Engineering
-We created new features to enhance our analysis:
 
+4️⃣ Feature Engineering
 Age Group Categorization
-python
-
-# Create age groups using quantile-based binning
 labels = ['Young_adult', 'Adult', 'Middle_aged', 'Senior', 'High']
 df['age_group'] = pd.qcut(df['age'], q=5, labels=labels)
-Purchase Frequency in Days
-python
 
-# Map frequency descriptions to numeric days
+Purchase Frequency (in Days)
 frequency_mapping = {
-    'Fortnightly': 14,
     'Weekly': 7,
-    'Annually': 365,
-    'Quarterly': 90,
-    'Bi-Weekly': 90,
+    'Fortnightly': 14,
     'Monthly': 30,
-    'Every 3 Months': 90
+    'Quarterly': 90,
+    'Every 3 Months': 90,
+    'Annually': 365
 }
 
 df['purchase_frequency_days'] = df['frequency_of_purchases'].map(frequency_mapping)
-5. Data Consistency Check
-We verified if discount_applied and promo_code_used were redundant:
 
-python
-
-# Check if columns are identical
+5️⃣ Data Consistency Check
 (df['discount_applied'] == df['promo_code_used']).all()
+df.drop('discount_applied', axis=1, inplace=True)
 
-# Drop redundant column
-df = df.drop('discount_applied', axis=1)
-6. Database Integration
-We connected to PostgreSQL and loaded the cleaned data:
-
-python
-
-# Install required packages
-pip install psycopg2-binary sqlalchemy
-
-# Connect to PostgreSQL
+🗄️ Database Integration (PostgreSQL)
 from sqlalchemy import create_engine
-username = 'postgres'
-password = 'postgres'
-host = 'localhost'
-port = '5432'
-database = 'customer_behaviour'
 
-engine = create_engine(f'postgresql+psycopg2://{username}:{password}@{host}:{port}/{database}')
+engine = create_engine(
+    "postgresql+psycopg2://postgres:postgres@localhost:5432/customer_behaviour"
+)
 
-table_name = 'customer_details'
-df.to_sql(table_name, engine, if_exists="replace", index=False)
+df.to_sql("customer_details", engine, if_exists="replace", index=False)
 
-print(f'Data successfully loaded into table {table_name} in database {database}')
-SQL Analysis & Key Business Questions
-We performed structured analysis in PostgreSQL to answer key business questions:
-
-1. Revenue by Gender
-sql
-
--- What is the total revenue generated by male vs. female customers?
+🧮 SQL Analysis & Business Questions
+Revenue by Gender
 SELECT gender, SUM(purchase_amount) AS revenue
-FROM customer
-GROUP BY gender
-2. High-Spending Discount Users
-sql
+FROM customer_details
+GROUP BY gender;
 
--- Which customers used a discount but still spent more than the average purchase amount?
-SELECT customer_id, purchase_amount 
-FROM customer 
-WHERE discount_applied = 'Yes' AND purchase_amount >= (SELECT AVG(purchase_amount) FROM customer)
-3. Top 5 Products by Rating
-sql
+High-Spending Discount Users
+SELECT customer_id, purchase_amount
+FROM customer_details
+WHERE promo_code_used = 'Yes'
+AND purchase_amount >= (SELECT AVG(purchase_amount) FROM customer_details);
 
--- Which are the top 5 products with the highest average review rating?
-SELECT item_purchased, ROUND(AVG(review_rating::numeric),2) AS "Average Product Rating"
-FROM customer
+Top 5 Products by Rating
+SELECT item_purchased,
+       ROUND(AVG(review_rating::numeric), 2) AS avg_rating
+FROM customer_details
 GROUP BY item_purchased
-ORDER BY AVG(review_rating) DESC
-LIMIT 5
-4. Shipping Type Comparison
-sql
+ORDER BY avg_rating DESC
+LIMIT 5;
 
--- Compare the average Purchase Amounts between Standard and Express Shipping
-SELECT shipping_type, 
-ROUND(AVG(purchase_amount),2)
-FROM customer
-WHERE shipping_type IN ('Standard','Express')
-GROUP BY shipping_type;
-5. Subscribers vs. Non-Subscribers
-sql
-
--- Do subscribed customers spend more? Compare average spend and total revenue 
--- between subscribers and non-subscribers.
+Subscribers vs Non-Subscribers
 SELECT subscription_status,
        COUNT(customer_id) AS total_customers,
        ROUND(AVG(purchase_amount),2) AS avg_spend,
        ROUND(SUM(purchase_amount),2) AS total_revenue
-FROM customer
-GROUP BY subscription_status
-ORDER BY total_revenue, avg_spend DESC;
-6. Discount-Dependent Products
-sql
-
--- Which 5 products have the highest percentage of purchases with discounts applied?
-SELECT item_purchased,
-       ROUND(100.0 * SUM(CASE WHEN discount_applied = 'Yes' THEN 1 ELSE 0 END)/COUNT(*),2) AS discount_rate
-FROM customer
-GROUP BY item_purchased
-ORDER BY discount_rate DESC
-LIMIT 5;
-7. Customer Segmentation
-sql
-
--- Segment customers into New, Returning, and Loyal based on their total 
--- number of previous purchases, and show the count of each segment
-WITH customer_type AS (
-SELECT customer_id, previous_purchases,
-CASE 
-    WHEN previous_purchases = 1 THEN 'New'
-    WHEN previous_purchases BETWEEN 2 AND 10 THEN 'Returning'
-    ELSE 'Loyal'
-    END AS customer_segment
-FROM customer)
-
-SELECT customer_segment, COUNT(*) AS "Number of Customers" 
-FROM customer_type 
-GROUP BY customer_segment;
-8. Top 3 Products per Category
-sql
-
--- Top 3 most purchased products within each category
-WITH item_counts AS (
-SELECT category, item_purchased,
-COUNT(customer_id) AS total_orders,
-ROW_NUMBER() OVER (PARTITION BY category ORDER BY COUNT(customer_id) DESC) AS item_rank
 FROM customer_details
-GROUP BY category, item_purchased
-)
+GROUP BY subscription_status;
 
-SELECT item_rank, category, item_purchased, total_orders 
-FROM item_counts
-WHERE item_rank <= 3
-9. Repeat Buyers & Subscriptions
-sql
+📈 Power BI Dashboard
 
--- Are customers who are repeat buyers (more than 5 previous purchases) also likely subscribers?
-SELECT subscription_status, COUNT(customer_id) AS repeat_buyers
-FROM customer_details
-WHERE previous_purchases > 5
-GROUP BY subscription_status
-10. Revenue by Age Group
-sql
+An interactive Power BI dashboard was created to visualize insights, including:
 
--- What are the revenue contributions of each age group?
-SELECT age_group, SUM(purchase_amount) AS revenue 
-FROM customer_details
-GROUP BY age_group
-ORDER BY revenue DESC
-Key Findings
-Customer Segmentation: Customers can be effectively segmented into New, Returning, and Loyal categories based on their purchase history.
-Discount Effectiveness: While discounts drive purchases, some customers still spend above average even with discounts applied.
-Product Performance: Specific products consistently receive higher ratings and drive more revenue.
-Shipping Preferences: Express shipping users tend to have higher purchase amounts compared to Standard shipping users.
-Subscription Impact: Subscribers show different purchasing patterns compared to non-subscribers.
-Age-Related Behavior: Different age groups contribute variably to total revenue.
-Repeat Purchase Behavior: Customers with more than 5 previous purchases show distinct subscription patterns.
-Business Recommendations
-Boost Subscriptions: Promote exclusive benefits for subscribers to increase conversion rates.
-Customer Loyalty Programs: Implement targeted rewards for repeat buyers to move them into the "Loyal" segment.
-Review Discount Policy: Optimize discount strategies to balance sales boosts with margin control.
-Product Positioning: Highlight top-rated and best-selling products in marketing campaigns.
-Targeted Marketing: Focus efforts on high-revenue age groups and express-shipping users.
-Power BI Dashboard
-We built an interactive dashboard in Power BI to present insights visually, featuring:
+Customer demographics
 
-Customer demographic breakdowns
-Purchase behavior visualizations
+Purchase behavior trends
+
 Product performance metrics
-Subscription analysis
-Discount effectiveness charts
-Technologies Used
-Python: Data preparation and cleaning (Pandas)
-PostgreSQL: Data storage and analysis
-SQL: Business queries and insights extraction
-Power BI: Data visualization and dashboarding
-GitHub: Version control and project documentation
-How to Run This Project
-Clone this repository:
-bash
 
+Subscription analysis
+
+Discount effectiveness
+
+📂 File: power_bi/customer_behavior_dashboard.pbix
+
+🔍 Key Findings
+
+Clear segmentation into New, Returning, and Loyal customers
+
+Discounts increase volume, but some customers spend above average even with discounts
+
+Express shipping customers tend to have higher purchase values
+
+Subscribers exhibit distinct purchasing behavior
+
+Revenue contribution varies significantly across age groups
+
+💡 Business Recommendations
+
+Promote subscription benefits to increase long-term value
+
+Implement loyalty programs for repeat buyers
+
+Optimize discount strategies to protect margins
+
+Highlight top-rated and best-selling products
+
+Focus targeted marketing on high-value age groups
+
+🛠️ Technologies Used
+
+Python (Pandas) – Data cleaning & preparation
+
+PostgreSQL – Data storage
+
+SQL – Business analysis
+
+Power BI – Dashboard & visualization
+
+GitHub – Version control & documentation
+
+▶️ How to Run the Project
 git clone https://github.com/yourusername/customer-shopping-behavior-analysis.git
 cd customer-shopping-behavior-analysis
-Set up a PostgreSQL database named customer_behaviour
-Install required Python packages:
-bash
+
+
+Create a PostgreSQL database named customer_behaviour
+
+Install dependencies:
 
 pip install pandas psycopg2-binary sqlalchemy
-Run the data preparation script:
-bash
+
+
+Run:
 
 python scripts/data_preparation.py
-Execute SQL queries from the sql/business_queries.sql file
-Open the Power BI dashboard in power_bi/customer_behavior_dashboard.pbix
-Future Work
-Implement machine learning models for purchase prediction
-Develop real-time customer behavior tracking
-Expand analysis to include seasonal trends
-Create personalized recommendation engine
-Integrate additional data sources for more comprehensive analysis
-License
-This project is licensed under the MIT License - see the LICENSE file for details.
 
-Contact
-For questions or collaborations, please reach out at [your.email@example.com].
+
+Execute SQL queries from sql/business_queries.sql
+
+Open Power BI dashboard file
+
+🚀 Future Work
+
+Predictive modeling for purchase behavior
+
+Real-time analytics integration
+
+Seasonal trend analysis
+
+Personalized recommendation engine
+
+
+
+This project is licensed under the MIT License.
+
+📬 Contact
+
+For questions or collaborations, reach out at:
+tarunkari0411@gmail.com
+
+                        
+
+
