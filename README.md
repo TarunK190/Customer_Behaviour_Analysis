@@ -45,7 +45,7 @@ df.describe(include='all')
 df.isnull().sum()
 
 
-2️⃣ Handling Missing Data
+### 2️⃣ Handling Missing Data
 
 The Review Rating column contained 37 missing values. These were imputed using the median rating per product category.
 
@@ -53,7 +53,7 @@ df['Review Rating'] = df.groupby('Category')['Review Rating'] \
                         .transform(lambda x: x.fillna(x.median()))
 
 
-3️⃣ Column Standardization
+### 3️⃣ Column Standardization
 df.columns = df.columns.str.lower().str.replace(' ', '_')
 df = df.rename(columns={'purchase_amount_(usd)': 'purchase_amount'})
 
