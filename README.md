@@ -49,17 +49,25 @@ df.isnull().sum()
 ### 2️⃣  Handling Missing Data
 
 The Review Rating column contained 37 missing values. These were imputed using the median rating per product category.
+```python
 
 df['Review Rating'] = df.groupby('Category')['Review Rating'] \
                         .transform(lambda x: x.fillna(x.median()))
-
+```
+---
 
 ### 3️⃣ Column Standardization
+```python
 df.columns = df.columns.str.lower().str.replace(' ', '_')
 df = df.rename(columns={'purchase_amount_(usd)': 'purchase_amount'})
+```
+---
+
 
 ### 4️⃣ Feature Engineering
 Age Group Categorization
+```python
+
 labels = ['Young_adult', 'Adult', 'Middle_aged', 'Senior', 'High']
 df['age_group'] = pd.qcut(df['age'], q=5, labels=labels)
 
@@ -87,6 +95,9 @@ engine = create_engine(
 )
 
 df.to_sql("customer_details", engine, if_exists="replace", index=False)
+
+```
+---
 
 ### 🧮 SQL Analysis & Business Questions
 Revenue by Gender
