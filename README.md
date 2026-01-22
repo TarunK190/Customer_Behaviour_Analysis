@@ -153,7 +153,7 @@ An interactive Power BI dashboard was created to visualize insights, including:
 
 
 
-![Power BI Dashboard](C:\Users\DELL\Personal_Projects\Personal_Projects_new\Customer_behaviour_analysis\analysis\Customer_behaviour_dashboard-1.jpg)
+![Power BI Dashboard](Customer_behaviour_dashboard-1.jpg)
 
 ---
 
