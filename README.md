@@ -43,9 +43,10 @@ df.head(20)
 df.info()
 df.describe(include='all')
 df.isnull().sum()
+```
+---
 
-
-### 2️⃣ Handling Missing Data
+### 2️⃣  Handling Missing Data
 
 The Review Rating column contained 37 missing values. These were imputed using the median rating per product category.
 
@@ -57,7 +58,7 @@ df['Review Rating'] = df.groupby('Category')['Review Rating'] \
 df.columns = df.columns.str.lower().str.replace(' ', '_')
 df = df.rename(columns={'purchase_amount_(usd)': 'purchase_amount'})
 
-4️⃣ Feature Engineering
+### 4️⃣ Feature Engineering
 Age Group Categorization
 labels = ['Young_adult', 'Adult', 'Middle_aged', 'Senior', 'High']
 df['age_group'] = pd.qcut(df['age'], q=5, labels=labels)
@@ -74,11 +75,11 @@ frequency_mapping = {
 
 df['purchase_frequency_days'] = df['frequency_of_purchases'].map(frequency_mapping)
 
-5️⃣ Data Consistency Check
+ ### 5️⃣ Data Consistency Check
 (df['discount_applied'] == df['promo_code_used']).all()
 df.drop('discount_applied', axis=1, inplace=True)
 
-🗄️ Database Integration (PostgreSQL)
+### 🗄️ Database Integration (PostgreSQL)
 from sqlalchemy import create_engine
 
 engine = create_engine(
@@ -87,7 +88,7 @@ engine = create_engine(
 
 df.to_sql("customer_details", engine, if_exists="replace", index=False)
 
-🧮 SQL Analysis & Business Questions
+### 🧮 SQL Analysis & Business Questions
 Revenue by Gender
 SELECT gender, SUM(purchase_amount) AS revenue
 FROM customer_details
@@ -115,7 +116,7 @@ SELECT subscription_status,
 FROM customer_details
 GROUP BY subscription_status;
 
-📈 Power BI Dashboard
+### 📈 Power BI Dashboard
 
 An interactive Power BI dashboard was created to visualize insights, including:
 
@@ -129,9 +130,9 @@ Subscription analysis
 
 Discount effectiveness
 
-📂 File: power_bi/customer_behavior_dashboard.pbix
+### 📂 File: power_bi/customer_behavior_dashboard.pbix
 
-🔍 Key Findings
+### 🔍 Key Findings
 
 Clear segmentation into New, Returning, and Loyal customers
 
@@ -143,7 +144,7 @@ Subscribers exhibit distinct purchasing behavior
 
 Revenue contribution varies significantly across age groups
 
-💡 Business Recommendations
+### 💡 Business Recommendations
 
 Promote subscription benefits to increase long-term value
 
@@ -155,7 +156,7 @@ Highlight top-rated and best-selling products
 
 Focus targeted marketing on high-value age groups
 
-🛠️ Technologies Used
+### 🛠️ Technologies Used
 
 Python (Pandas) – Data cleaning & preparation
 
@@ -167,7 +168,7 @@ Power BI – Dashboard & visualization
 
 GitHub – Version control & documentation
 
-▶️ How to Run the Project
+### ▶️ How to Run the Project
 git clone https://github.com/yourusername/customer-shopping-behavior-analysis.git
 cd customer-shopping-behavior-analysis
 
@@ -188,7 +189,7 @@ Execute SQL queries from sql/business_queries.sql
 
 Open Power BI dashboard file
 
-🚀 Future Work
+### 🚀 Future Work
 
 Predictive modeling for purchase behavior
 
@@ -202,7 +203,7 @@ Personalized recommendation engine
 
 This project is licensed under the MIT License.
 
-📬 Contact
+### 📬 Contact
 
 For questions or collaborations, reach out at:
 tarunkari0411@gmail.com
