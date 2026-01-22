@@ -220,4 +220,4 @@ python scripts/data_preparation.py
 ## 📬 Contact
 
 For questions or collaborations, reach out at:  
-**your.email@example.com**
+**tarunkari0411@gmail.com**
