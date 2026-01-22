@@ -82,12 +82,21 @@ frequency_mapping = {
 }
 
 df['purchase_frequency_days'] = df['frequency_of_purchases'].map(frequency_mapping)
+```
+---
 
- ### 5️⃣ Data Consistency Check
+
+ 5️⃣ Data Consistency Check
+ ```python
 (df['discount_applied'] == df['promo_code_used']).all()
 df.drop('discount_applied', axis=1, inplace=True)
 
+```
+---
+
+
 ### 🗄️ Database Integration (PostgreSQL)
+```sql
 from sqlalchemy import create_engine
 
 engine = create_engine(
@@ -101,6 +110,7 @@ df.to_sql("customer_details", engine, if_exists="replace", index=False)
 
 ### 🧮 SQL Analysis & Business Questions
 Revenue by Gender
+```sql
 SELECT gender, SUM(purchase_amount) AS revenue
 FROM customer_details
 GROUP BY gender;
@@ -126,6 +136,8 @@ SELECT subscription_status,
        ROUND(SUM(purchase_amount),2) AS total_revenue
 FROM customer_details
 GROUP BY subscription_status;
+```
+---
 
 ### 📈 Power BI Dashboard
 
